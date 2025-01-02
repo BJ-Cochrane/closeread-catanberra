@@ -1,0 +1,158 @@
+---
+title: "<span style='font-size:40pt'><span style='color:#f8ce06;'>**CATAN**</span>berra</span>"
+format:
+  closeread-html:
+    remove-header-space: FALSE
+    code-tools: FALSE
+    # image: mindard-map.png
+    description: "A geographically accurate Australian Catan board"
+    # mainfont: 'Minion'
+    cr-style:
+      narrative-font-size: 1.25rem
+      section-background-color: '#fff0a6'
+    #   narrative-text-color-overlay: black
+
+---
+
+::: epigraph
+> Your scientists were so preoccupied with whether or not they **could**,\
+> they didn't stop to think if they **should**.\
+> - *Dr. Ian Malcolm (Jeff Goldblum), Jurrasic Park*
+:::
+
+![](diagrams/jeff.gif)
+
+I find it difficult to apply myself if the goal is not something that does not have a ridiculous end point.
+
+What started as a foire into learning GIS, turned into a full-blown mission, blood sweat and tears.
+
+This is the journey of creating CATANberra, a geographically accurate version of Australia as a Catan board.
+
+
+
+## The geographic grounding
+
+[^1]: ABARES 2024, *Land use of Australia 2010–11 to 2020–21*, Australian Bureau of Agricultural and Resource Economics and Sciences, Canberra, November, CC BY 4.0. DOI: [10.25814/w175-xh85]{.underline}
+
+::: cr-section
+{{< spacer 10svh >}}
+
+::: {#cr-map}
+![](diagrams/ABARESlanduse.jpg)
+:::
+
+The Department of Agriculture Fisheries and Forestry (ABARES) very politely publishes land use data mapped at a national scale.[^1] [@cr-map]
+
+It is a very colourful representation of what land is used for what purpose in Australia, all based on ️satellite images
+
+You can see a large chunk of Australia is either <span style='color:#c9c9b5;'>**Grazing native vegetation**</span>, <span style='color:#9666CC;'>**Nature conservations**</span>,<span style='color:#C9BEFF;'>**Other minimal use**</span> [@cr-map]{scale-by="2"}
+
+The 18-class classification processes assigns land to one of **18 unique land uses.** [@cr-map]{pan-to="50%,-30%" scale-by="1.75"}
+
+These land uses must be sorted into the relevant Catan tiles, namely:
+<div style="text-align: center;">
+<span style='font-size:40pt'>
+🐑 Wool  
+🌾 Grain  
+🌲 Lumber  
+⛰️ Ore   
+🧱 Brick  
+🌵️ Desert
+</span>
+</div>
+
+[@cr-map]{pan-to="50%,-30%" scale-by="1.75"}
+
+<span style='font-size:25pt'>Some of these categories line up nicely, </span>
+
+<span style='font-size:25pt'><span style='color:#FFFFE5;'>Grazing native vegetation</span> is great for 🐑</span>
+
+<span style='font-size:25pt'><span style='color:#C9B854;'>Irrigated cropping</span>, and <span style='color:#FFFF00;'>dryland cropping</span> is great for 🌾</span>
+
+<span style='font-size:25pt'><span style='color:#298944;'>Production native forests</span>, <span style='color:#ADFFB5;'>plantation forests</span> and <span style='color:#9666CC;'>Nature conservations</span> can be 🌲</span>
+
+<span style='font-size:25pt'><span style='color:#47828F;'>Mining and waste</span> are quite clearly ⛰️</span>
+
+<span style='font-size:25pt'><span style='color:#0000FF;'>Water</span> is probably the most likely place to get mud to make some 🧱</span>
+
+<span style='font-size:25pt'>And anything that is <span style='color:#C9BEFF;'>Other minimal use</span>(aka nothing) <span style='color:#0000FF;'>Water</span> can be considered our 🌵</span>
+
+:::
+
+
+::: cr-section
+{{< spacer 10svh >}}
+
+::: {#cr-landuse}
+![](diagrams/land_use_calc.png)
+:::
+
+You can see the final categorisations I decided on here. [@cr-landuse]
+
+Importantly, I decided that <span style='color:#DE87DD;'>**Managed resource protection**</span> could mean a lot of things. [@cr-landuse]{scale-by='2.5'}
+
+So I decided to assign it at random.
+
+Here is the code [@cr-code]
+
+And because our resource allocations are a little varying, I decided this 'randomness' should favour more scarce resources [@cr-code]{highlight="3,7"}
+
+:::{#cr-code .scale-to-fill}
+```{r}
+#| echo: true
+#| message: false
+#| output: false
+
+randomise_land_use <- function(df) {
+  # Set weights and land use types
+  land_use_weights <- c(Desert = 0.2, Brick = 0.35, Lumber = 0.1, Ore = 0.35)
+  
+  # Randomize land use for rows where land_use_descrip is "Managed resource protection"
+  df$catan_use <- ifelse(
+    df$land_use_descrip == "Managed resource protection",
+    sample(
+      names(land_use_weights), 
+      sum(df$land_use_descrip == "Managed resource protection"), 
+      prob = land_use_weights
+    ),
+    df$catan_use
+  )
+  
+  return(df)
+}
+```
+:::
+
+
+:::
+
+
+
+:::{.cr-section layout="overlay-center"}
+
+::: {#cr-map2}
+![](diagrams/ABARESlanduse.jpg)
+:::
+
+These land uses must be sorted into the relevant Catan tiles, namely: @cr-map2
+
+
+
+Now, it's not a perfect fit.
+
+In September, the army reached Moscow, which was by then sacked and deserted, with 100,000 men. @cr-map
+
+The path of Napoleon's retreat from Moscow is depicted by the darker, lower band, which is linked to a temperature scale and dates at the bottom of the chart. It was a bitterly cold winter, and many froze on the march out of Russia. @cr-map
+
+As the graphic shows, the crossing of the Berezina River was a disaster, and the army finally struggled back into Poland with only 10,000 men remaining. @cr-map
+
+Also shown are the movements of auxiliary troops, as they sought to protect the rear and the flank of the advancing army.
+
+Minard's graphic tells a rich, coherent story with its multivariate data, far more enlightening than just a single number bouncing along over time. Six variables are plotted: @cr-map
+
+It may well be the best statistical graphic ever drawn.
+:::
+
+[^2]: ABARES 2024, *Land use of Australia 2010–11 to 2020–21*, Australian Bureau of Agricultural and Resource Economics and Sciences, Canberra, November, CC BY 4.0. DOI: [10.25814/w175-xh85]{.underline}
+
+##Refs
