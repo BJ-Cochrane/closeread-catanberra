@@ -3,7 +3,6 @@ title: "<span style='font-size:40pt'><span style='color:#f8ce06;'>**CATAN**</spa
 author: Ben Cochrane
 format:
   closeread-html:
-    css: catan-css.css
     remove-header-space: FALSE
     code-tools: FALSE
     description: "A geographically accurate Australian Catan board"

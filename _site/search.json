@@ -1,0 +1,65 @@
+[
+  {
+    "objectID": "my-project.html",
+    "href": "my-project.html",
+    "title": "my-project",
+    "section": "",
+    "text": "Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org."
+  },
+  {
+    "objectID": "my-project.html#quarto",
+    "href": "my-project.html#quarto",
+    "title": "my-project",
+    "section": "",
+    "text": "Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org."
+  },
+  {
+    "objectID": "catan-closeread.html",
+    "href": "catan-closeread.html",
+    "title": "CATANberra",
+    "section": "",
+    "text": "Your scientists were so preoccupied with whether or not they could,\nthey didn’t stop to think if they should.\n- Dr. Ian Malcolm (Jeff Goldblum), Jurrasic Park\nI find that having a ridiculous end point is a great way to learn a new skill.\nKind of like dicing up your vegetables and hiding them in the spag bog.\nYou’re doing something good, but it doesn’t feel like hard work.\nThat is where the mission of making a geographically accurate Catan board started for me.\nWhat started as a foire into learning geospatial data, turned into a full-blown mission: blood, sweat and tears.\nThis is my journey of creating CATANberra1, a geographically accurate version of Australia as a Catan board - entirely with R2."
+  },
+  {
+    "objectID": "catan-closeread.html#part-i-what-is-catan",
+    "href": "catan-closeread.html#part-i-what-is-catan",
+    "title": "CATANberra",
+    "section": "Part I: What is Catan",
+    "text": "Part I: What is Catan"
+  },
+  {
+    "objectID": "catan-closeread.html#part-ii-the-geographic-grounding",
+    "href": "catan-closeread.html#part-ii-the-geographic-grounding",
+    "title": "CATANberra",
+    "section": "Part II: The geographic grounding",
+    "text": "Part II: The geographic grounding"
+  },
+  {
+    "objectID": "catan-closeread.html#part-iii-a-brief-raster-diversion",
+    "href": "catan-closeread.html#part-iii-a-brief-raster-diversion",
+    "title": "CATANberra",
+    "section": "Part III: A brief raster diversion",
+    "text": "Part III: A brief raster diversion"
+  },
+  {
+    "objectID": "catan-closeread.html#part-iv-ok-were-finally-getting-there",
+    "href": "catan-closeread.html#part-iv-ok-were-finally-getting-there",
+    "title": "CATANberra",
+    "section": "Part IV: Ok we’re finally getting there",
+    "text": "Part IV: Ok we’re finally getting there"
+  },
+  {
+    "objectID": "catan-closeread.html#part-v-the-victory-lap",
+    "href": "catan-closeread.html#part-v-the-victory-lap",
+    "title": "CATANberra",
+    "section": "Part V: The victory lap",
+    "text": "Part V: The victory lap"
+  },
+  {
+    "objectID": "catan-closeread.html#footnotes",
+    "href": "catan-closeread.html#footnotes",
+    "title": "CATANberra",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nThe name CATANberra is a reference to the capital of Australia, Canberra.↩︎\nOk maybe not entirely, there was a bit of QGIS as the start, that doesn’t count.↩︎\nABARES 2024, Land use of Australia 2010–11 to 2020–21, Australian Bureau of Agricultural and Resource Economics and Sciences, Canberra, October, CC BY 4.0. DOI: 10.25814/w175-xh85↩︎"
+  }
+]
