@@ -1,17 +1,20 @@
 ---
 title: "<span style='font-size:40pt'><span style='color:#f8ce06;'>**CATAN**</span>berra</span>"
+author: Ben Cochrane
 format:
   closeread-html:
+    css: catan-css.css
     remove-header-space: FALSE
     code-tools: FALSE
-    # image: mindard-map.png
     description: "A geographically accurate Australian Catan board"
     # mainfont: 'Minion'
     cr-style:
-      narrative-font-size: 1.25rem
-      section-background-color: '#fff0a6'
-    #   narrative-text-color-overlay: black
-
+      narrative-font-size: 1.75rem
+      # section-background-color: '#A62C2B'
+      narrative-sidebar-width: 1fr 2fr
+    cr-section:
+      layout: overlay-center
+    fig-align: 'center'
 ---
 
 ::: epigraph
@@ -20,82 +23,131 @@ format:
 > - *Dr. Ian Malcolm (Jeff Goldblum), Jurrasic Park*
 :::
 
+[^1]: ABARES 2024, *Land use of Australia 2010–11 to 2020–21*, Australian Bureau of Agricultural and Resource Economics and Sciences, Canberra, October, CC BY 4.0. DOI: _10.25814/w175-xh85_
+[^2]: The name CATANberra is a reference to the capital of Australia, Canberra.
+[^3]: Ok maybe not _entirely_, there was a bit of QGIS as the start, that doesn't count.
+
 ![](diagrams/jeff.gif)
 
-I find it difficult to apply myself if the goal is not something that does not have a ridiculous end point.
+I find that having a ridiculous end point is a great way to learn a new skill.
 
-What started as a foire into learning GIS, turned into a full-blown mission, blood sweat and tears.
+Kind of like dicing up your vegetables and hiding them in the spag bog.
 
-This is the journey of creating CATANberra, a geographically accurate version of Australia as a Catan board.
+You're doing something good, but it doesn't feel like hard work.
 
+That is where the mission of making a geographically accurate Catan board started for me.
 
+What started as a foire into learning geospatial data, turned into a full-blown mission: blood, sweat and tears.
 
-## The geographic grounding
+This is my journey of creating CATANberra[^2], a geographically accurate version of Australia as a Catan board - entirely with R[^3].
 
-[^1]: ABARES 2024, *Land use of Australia 2010–11 to 2020–21*, Australian Bureau of Agricultural and Resource Economics and Sciences, Canberra, November, CC BY 4.0. DOI: [10.25814/w175-xh85]{.underline}
+\
+\
 
-::: cr-section
-{{< spacer 10svh >}}
+::::{.cr-section layout="overlay-left"}
+
+## Part I: *What is Catan*
+
+Catan is a multiplayer strategy game. @cr-box
+
+::: {#cr-box}
+![](diagrams/catan-box.jpg)
+:::
+
+::: {#cr-board}
+![](diagrams/catan-board.png)
+:::
+
+It is played on a board of hex tiles,  @cr-board
+
+Each tile represents a resource: wool, grain, lumber, ore, brick, and desert.
+
+Players take turns gathering resources and building settlements, cities and roads.[@cr-board]{scale-by="3" pan-to="50%,15%"}
+
+Settlements and cities generates resources which can be used to build more infrastructure,
+
+Typically played on a standard hexagon of 19 hexes.
+
+But what would it look like if it was shaped like Australia, with each hex representing a geographically accurate resource?
+
+Let's find out.
+
+::::
+
+::::{.cr-section layout="overlay-left"}
+
+## Part II: *The geographic grounding*
 
 ::: {#cr-map}
-![](diagrams/ABARESlanduse.jpg)
+![](diagrams/abares-landuse.png){fig-align='center'}
 :::
 
 The Department of Agriculture Fisheries and Forestry (ABARES) very politely publishes land use data mapped at a national scale.[^1] [@cr-map]
 
 It is a very colourful representation of what land is used for what purpose in Australia, all based on ️satellite images
 
-You can see a large chunk of Australia is either <span style='color:#c9c9b5;'>**Grazing native vegetation**</span>, <span style='color:#9666CC;'>**Nature conservations**</span>,<span style='color:#C9BEFF;'>**Other minimal use**</span> [@cr-map]{scale-by="2"}
+The 18-class classification processes assigns land to one of **18 unique land uses.**, known as CL18. [@cr-map]{pan-to="55%,-47%" scale-by="1.5"}
 
-The 18-class classification processes assigns land to one of **18 unique land uses.** [@cr-map]{pan-to="50%,-30%" scale-by="1.75"}
+Australia is big.[@cr-map]{pan-to="10%,-10%"}
 
-These land uses must be sorted into the relevant Catan tiles, namely:
-<div style="text-align: center;">
-<span style='font-size:40pt'>
+But a lot of this space is made up of things like <span style='color:#FFFFE5;'>**Grazing native vegetation**</span>, <span style='color:#9666CC;'>**Nature conservations**</span>, <span style='color:#DE87DD;'>**Managed resource protection**</span>, and <span style='color:#C9BEFF;'>**Other minimal use**</span> [@cr-map]{scale-by="2"}
+
+Infact, **43.3%** of Australia is made up of <span style='color:#FFFFE5;'>**Grazing native vegetation**</span>. [@cr-map]{scale-by="2"}
+
+We also see more industrial industry, like <span style='color:#FFFF00;'>**Dryland cropping**</span>, <span style='color:#298944;'>**Production native forests**</span> and <span style='color:#FFD37F;'>**Grazing modified pastures**</span>[@cr-map]{pan-to="-135%, 10%" scale-by="4"}
+
+Despite Australia being well known for its mining, it actually takes up a relatively small part of its land use (only **0.09%** of land use).[@cr-map]
+
+See if you can see the very small coloured <span style='color:#47828F;'>**Mining and waste**</span> tiles in the Pilbara.[@cr-map]{scale-by="5" pan-to="75%,35%"}
+
+(Hint: have a look near the <span style='color:#FF0000;'>**Urban intensive uses **</span> -- the towns)[@cr-map]{scale-by="5" pan-to="75%,35%"}
+
+We also have healthy sprinklings of <span style='color:#0000FF;'>**Water**</span>, nice. [@cr-map]{scale-by="3" pan-to="-60%,-20%"}
+
+These land uses must be sorted into the relevant Catan tiles.[@cr-map]{pan-to="55%,-47%" scale-by="1.5"}
+
+The Catan tiles are:  <div style="text-align: center;"><span style='font-size:40pt'>
 🐑 Wool  
 🌾 Grain  
 🌲 Lumber  
-⛰️ Ore   
+⛰️ Ore  
 🧱 Brick  
-🌵️ Desert
-</span>
-</div>
+🌵 Desert
+</span></div [@cr-map]{scale-by="1.75" pan-to="50%,-30%"}
+<span style='font-size:25pt'>Some of these categories line up nicely. </span>
 
-[@cr-map]{pan-to="50%,-30%" scale-by="1.75"}
+<span style='font-size:25pt'><span style='color:#FFFFE5;'>**Grazing native vegetation**</span> is great for 🐑</span>
 
-<span style='font-size:25pt'>Some of these categories line up nicely, </span>
+<span style='font-size:25pt'><span style='color:#C9B854;'>**Irrigated cropping**</span>, and <span style='color:#FFFF00;'>**Dryland cropping**</span> is great for 🌾</span>
 
-<span style='font-size:25pt'><span style='color:#FFFFE5;'>Grazing native vegetation</span> is great for 🐑</span>
+<span style='font-size:25pt'><span style='color:#298944;'>**Production native forests**</span>, <span style='color:#ADFFB5;'>**Plantation forests**</span> and <span style='color:#9666CC;'>**Nature conservations**</span> can be 🌲</span>
 
-<span style='font-size:25pt'><span style='color:#C9B854;'>Irrigated cropping</span>, and <span style='color:#FFFF00;'>dryland cropping</span> is great for 🌾</span>
+<span style='font-size:25pt'><span style='color:#47828F;'>**Mining and waste**</span> is quite clearly ⛰️</span>
 
-<span style='font-size:25pt'><span style='color:#298944;'>Production native forests</span>, <span style='color:#ADFFB5;'>plantation forests</span> and <span style='color:#9666CC;'>Nature conservations</span> can be 🌲</span>
+<span style='font-size:25pt'><span style='color:#0000FF;'>**Water**</span> is probably the most likely place to get mud to make some 🧱</span>
 
-<span style='font-size:25pt'><span style='color:#47828F;'>Mining and waste</span> are quite clearly ⛰️</span>
+<span style='font-size:25pt'>And anything that is <span style='color:#C9BEFF;'>**Other minimal use**</span> (aka woop-woop) can be considered our 🌵</span>
 
-<span style='font-size:25pt'><span style='color:#0000FF;'>Water</span> is probably the most likely place to get mud to make some 🧱</span>
+::::
 
-<span style='font-size:25pt'>And anything that is <span style='color:#C9BEFF;'>Other minimal use</span>(aka nothing) <span style='color:#0000FF;'>Water</span> can be considered our 🌵</span>
-
-:::
-
-
-::: cr-section
+::::{.cr-section layout="overlay-left"}
 {{< spacer 10svh >}}
 
 ::: {#cr-landuse}
 ![](diagrams/land_use_calc.png)
 :::
 
-You can see the final categorisations I decided on here. [@cr-landuse]
+Here are the the final categorisations I landed on: [@cr-landuse]
 
-Importantly, I decided that <span style='color:#DE87DD;'>**Managed resource protection**</span> could mean a lot of things. [@cr-landuse]{scale-by='2.5'}
+Importantly, I decided that <span style='color:#DE87DD;'>**Managed resource protection**</span> could mean a lot of things. [@cr-landuse]{scale-by='2.5' pan-to='0px,-200px'}
 
 So I decided to assign it at random.
 
-Here is the code [@cr-code]
+Here is the code: [@cr-code]
 
-And because our resource allocations are a little varying, I decided this 'randomness' should favour more scarce resources [@cr-code]{highlight="3,7"}
+Because our resource allocations are a little varying, I decided this 'randomness' should favour more scarce resources.
+
+Take note of the weightings for resources like <span style='color:#a4aaba;'>⛰️ Ore </span>and <span style='color:#aa6521;'>🧱 Brick</span>.  [@cr-code]{highlight="3,7"}
 
 :::{#cr-code .scale-to-fill}
 ```{r}
@@ -106,53 +158,410 @@ And because our resource allocations are a little varying, I decided this 'rando
 randomise_land_use <- function(df) {
   # Set weights and land use types
   land_use_weights <- c(Desert = 0.2, Brick = 0.35, Lumber = 0.1, Ore = 0.35)
-  
+
   # Randomize land use for rows where land_use_descrip is "Managed resource protection"
   df$catan_use <- ifelse(
     df$land_use_descrip == "Managed resource protection",
     sample(
-      names(land_use_weights), 
-      sum(df$land_use_descrip == "Managed resource protection"), 
+      names(land_use_weights),
+      sum(df$land_use_descrip == "Managed resource protection"),
       prob = land_use_weights
     ),
     df$catan_use
   )
-  
+
   return(df)
 }
 ```
 :::
 
+::::
 
+::::{.cr-section layout="overlay-center"}
+{{< spacer 10svh >}}
+::: {#cr-real}
+![](diagrams/raster-real-world.png)
+:::
+
+## Part III: *A brief raster diversion*
+
+A quick chat on rasters. @cr-real
+
+A _raster_ is the result of capturing land area into associated coloured pixels.
+
+Each individual cell represents a certain area.
+
+::: {#cr-raster}
+![](diagrams/vector-raster.png)
 :::
 
 
 
-:::{.cr-section layout="overlay-center"}
+We are using the *Land use of Australia 2010–11 to 2015-16,* [250m.]{.underline}
 
-::: {#cr-map2}
-![](diagrams/ABARESlanduse.jpg)
+A resolution of 250m means each pixel (cell) represents 250m x 250m. [@cr-raster]
+
+This Australian raster is 18633 x 15669 pixels
+
+That's **291,960,477 pixels**
+
+This is **way, way** too big for my computer to handle in R.
+
+R purists... now is the time to look away.
+
+::: {#cr-qgis}
+![](diagrams/gis-hd.png)
 :::
 
-These land uses must be sorted into the relevant Catan tiles, namely: @cr-map2
+I used some QGIS magic to resampled the data to 10km. @cr-qgis
 
+I don't quite know the implications of this, but less pixels = easier.
 
+::::
+::::{.cr-section layout="overlay-left"}
 
-Now, it's not a perfect fit.
+## Part IV: *Ok we're finally getting there*
 
-In September, the army reached Moscow, which was by then sacked and deserted, with 100,000 men. @cr-map
+Alright, now to start building up the map.
 
-The path of Napoleon's retreat from Moscow is depicted by the darker, lower band, which is linked to a temperature scale and dates at the bottom of the chart. It was a bitterly cold winter, and many froze on the march out of Russia. @cr-map
+First we load in the raster.[@cr-1]
+```{r}
+#| label: setup
+#| echo: false
+#| output: false
+library(tidyverse)
+library(sf)
 
-As the graphic shows, the crossing of the Berezina River was a disaster, and the army finally struggled back into Poland with only 10,000 men remaining. @cr-map
+joined <- readRDS('data/aus_points_joined.RDS')
+map_data <- readRDS('data/aus_map_data.RDS') %>%  filter(land_use != 'Rural residential and farm infrastructure')
+centroids <- readRDS('data/centroids.RDS')
 
-Also shown are the movements of auxiliary troops, as they sought to protect the rear and the flank of the advancing army.
+land_concord <-
+  tibble::tribble(
+    ~land_use_descrip, ~catan_use, ~colour,
+    "Urban intensive uses", "Ore", "#FF0000",
+    "Intensive horticulture and animal production", "Wool", "#FFC9BE",
+    "Rural residential and farm infrastructure", "Wool", "#B2B2B2",
+    "Plantation forests", "Lumber", "#ADFFB5",
+    "Grazing modified pastures", "Wool", "#FFD37F",
+    "Mining and waste", "Ore", "#47828F",
+    "Dryland cropping", "Grain", "#FFFF00",
+    "Dryland horticulture", "Grain", "#AB8778",
+    "Water", "Brick", "#0000FF",
+    "Nature conservation", "Lumber", "#9666CC",
+    "Managed resource protection", "Brick", "#DE87DD",
+    "Other minimal use", "Desert", "#C9BEFF",
+    "Irrigated pastures", "Wool", "#FFAA00",
+    "Irrigated cropping", "Grain", "#C9B854",
+    "Irrigated horticulture", "Lumber", "#9C542E",
+    "Grazing native vegetation", "Wool", "#FFFFE5",
+    "Production native forests", "Lumber", "#298944"
+  )
+names(land_concord$colour) <- land_concord$land_use_descrip
 
-Minard's graphic tells a rich, coherent story with its multivariate data, far more enlightening than just a single number bouncing along over time. Six variables are plotted: @cr-map
+tiles <-
+  tribble(
+    ~icon, ~tile, ~fill, ~colour,
+    "🏺", "Brick", "#aa6521", "#553311",
+    "🌵", "Desert", "#d3ac56", "#6a562b",
+    "🌾", "Grain", "#97a72a", "#4c5415",
+    "🌲", "Lumber", "#3e451c", "#1f230e",
+    "🗻", "Ore", "#a4aaba", "#52555d",
+    "🐑", "Wool", "#f7f0d1", "#7c7869"
+  )
+print('Here we go')
+```
 
-It may well be the best statistical graphic ever drawn.
+We're basically representing each pixel as a point (just under 80,000 points).[@cr-1]{scale-by=4}
+
+Hence why my computer probably didn't like the 250m version. That was a lot of points![@cr-1]
+
+:::{#cr-1}
+```{r}
+#| label: cr1
+ggplot(joined) +
+  geom_sf(aes(colour = land_use_descrip))+
+  scale_colour_manual(values = setNames(land_concord$colour, land_concord$land_use_descrip)) +
+  theme_minimal()+
+  guides(colour = 'none')+
+  lims(x = c(112,155),
+       y = c(-45,-8))
+```
 :::
 
-[^2]: ABARES 2024, *Land use of Australia 2010–11 to 2020–21*, Australian Bureau of Agricultural and Resource Economics and Sciences, Canberra, November, CC BY 4.0. DOI: [10.25814/w175-xh85]{.underline}
 
-##Refs
+Next, we divide Australia into equally sized hexes @cr-2
+
+You can pick whatever size, which we'll play with later.
+
+I filter out the Bass Strait hexes. [@cr-2]{scale-by=6 pan-to="-80%,-120%"}
+
+Sorry to any residents of Flinders, Kent or King Island. [@cr-2]{scale-by=6 pan-to="-80%,-120%"}
+
+:::{#cr-2}
+```{r}
+#| label: cr2
+ggplot(joined) +
+  geom_sf(aes(colour = land_use_descrip))+
+  geom_sf(data = map_data, alpha = 0.5)+
+  scale_colour_manual(values = setNames(land_concord$colour, land_concord$land_use_descrip)) +
+  theme_minimal()+
+  guides(colour = 'none')+
+  lims(x = c(112,155),
+       y = c(-45,-8))
+```
+:::
+
+We'll determine the hex allocation by calculating the **most predominant** land use within it. [@cr-2]
+
+From this we can assign the CL18 land use classification [@cr-3]
+
+Next, we have our simplified land use map. [@cr-3]
+
+:::{#cr-3}
+```{r}
+#| label: cr3
+ggplot(joined) +
+  geom_sf(aes(colour = land_use_descrip),alpha = 0.2)+
+  geom_sf(data = map_data,aes(fill = land_use_descrip), alpha = 0.5)+
+  scale_colour_manual(values = setNames(land_concord$colour, land_concord$land_use_descrip)) +
+  scale_fill_manual(values = setNames(land_concord$colour, land_concord$land_use_descrip)) +
+  theme_minimal()+
+  guides(colour = 'none',
+         fill = 'none')+
+  lims(x = c(112,155),
+       y = c(-45,-8))
+```
+:::
+
+We can now remove the individual points, and free up some RAM... [@cr-4]
+
+:::{#cr-4}
+```{r}
+#| label: cr4
+ggplot(joined) +
+  geom_sf(data = map_data,aes(fill = land_use_descrip))+
+  scale_colour_manual(values = setNames(land_concord$colour, land_concord$land_use_descrip)) +
+  scale_fill_manual(values = setNames(land_concord$colour, land_concord$land_use_descrip)) +
+  theme_minimal()+
+  guides(colour = 'none',
+  fill = 'none')+
+  lims(x = c(112,155),
+       y = c(-45,-8))
+```
+:::
+
+Now we apply our Catan classifications, and colours @cr-5
+
+Reminder, these these are:\
+\
+<span style='color:#f7f0d1;'>🐑 Wool</span>  
+<span style='color:#97a72a;'>🌾 Grain </span>  
+<span style='color:#3e451c;'>🌲 Lumber</span>  
+<span style='color:#a4aaba;'>⛰️ Ore </span>  
+<span style='color:#aa6521;'>🧱 Brick</span>  
+<span style='color:#d3ac56;'>🌵️ Desert</span>
+
+:::{#cr-5}
+```{r}
+  #| label: cr5
+ggplot() +
+  geom_sf(data = map_data,aes(fill = catan_use))+
+  scale_colour_manual(values = setNames(land_concord$colour, land_concord$land_use_descrip)) +
+  scale_fill_manual(values = setNames(tiles$fill, tiles$tile)) +
+  theme_minimal()+
+  guides(colour = 'none',
+         fill = 'none',
+         shape = 'none')+
+  lims(x = c(112,155),
+       y = c(-45,-8))
+```
+:::
+
+:::{#cr-6}
+```{r}
+#| label: cr6
+  ggplot() +
+  geom_sf(data = map_data,aes(fill = catan_use))+
+  geom_point(
+    data = centroids,
+    aes(X,
+        Y - 0.2,
+        shape = catan_use,
+        colour = catan_use
+    ),
+    size = 4.5
+  ) +
+  scale_shape_manual(values = tiles$icon) +
+  scale_fill_manual(values = tiles$fill) +
+  scale_colour_manual(values = tiles$colour) +
+  theme_minimal()+
+  theme(axis.title = element_blank())+
+  guides(colour = 'none',
+         fill = 'none',
+         shape = 'none')+
+  lims(x = c(112,155),
+       y = c(-45,-8))
+```
+:::
+
+And throw in some tile icons for a bit of pizzazz and to make it easier to track @cr-6
+
+And there we have it!
+
+Astute readers might have noticed a key element of Catan missing...
+
+::::
+
+::::{.cr-section layout="overlay-center"}
+```{ojs}
+//| echo: false
+//| code-fold: false
+//| output: false
+cities = [
+  { name: "Port of Hedland", lat: -20, lon: 118.625 },
+  { name: "Port of Brisbane", lat: -27.3867, lon: 153.1693 },
+  { name: "Port of Fremantle", lat: -32.0556, lon: 115.7439 },
+  { name: "Port of Adelaide", lat: -34.7983, lon: 138.4911 },
+  { name: "Port of Darwin", lat: -12.4634, lon: 130.8456 },
+  { name: "Port of Newcastle", lat: -32.9265, lon: 151.7804 },
+  { name: "Port of Townsville", lat: -19.2564, lon: 146.8233 },
+  { name: "Port of Gladstone", lat: -23.8431, lon: 151.2519 },
+  { name: "Port of Hobart", lat: -42.88333, lon: 147.36667 }
+]
+```
+
+```{ojs}
+//| echo: false
+//| output: false
+world = FileAttachment("data/naturalearth-land-110m.geojson").json()
+```
+
+```{ojs}
+//| echo: false
+angleScale1 = d3.scaleLinear()
+  .domain([0, 1])
+  .range([0, -150])
+  .clamp(true)
+    
+angle1 = angleScale1(crProgressBlock)
+```
+:::{.progress-block}
+The Ports! @cr-globe1
+
+Here they come, the top Australian ports by volume @cr-globe1
+
+
+
+
+
+
+
+Wow, Catan colours too! @cr-globe1
+:::
+
+:::{#cr-globe1}
+
+```{ojs}
+//| echo: false
+Plot.plot({
+  marks: [
+    Plot.graticule(),
+    Plot.geo(world, {
+      fill: "#A62C2B"
+    }),
+    Plot.sphere(),
+    Plot.dot(cities, {
+      x: "lon",
+      y: "lat",
+      fill: "#000000",
+      stroke: "white",
+      strokeWidth: 5,
+      paintOrder: "stroke",
+      size: 6
+    }),
+    Plot.text(cities, {
+      x: d => d.lon + 2,
+      y: d => d.lat + 2,
+      text: "name",
+      fill: "#000000",
+      stroke: "white",
+      strokeWidth: 5,
+      paintOrder: "stroke",
+      fontSize: 18,
+      textAnchor: "start"
+    }),
+  ],
+  projection: {
+    type: "orthographic",
+    rotate: [angle1, 30]
+  }
+})
+```
+
+:::
+
+
+To add these ports, we find the nearest ocean hex tile to place a port, and throw one in. 
+
+::::
+
+::::{.cr-section layout="overlay-left"}
+
+## Part V: *The victory lap*
+::: {#cr-build}
+![](diagrams/construction.gif)
+:::
+
+The whole process from here looks like this! @cr-build
+
+::: {#cr-final}
+![](diagrams/final_catan.png)
+:::
+
+Add some polishing touches, and you've got yourself a playable board! @cr-final
+
+::: {#cr-gif}
+![](diagrams/catangif.gif)
+:::
+
+
+
+Like I mentioned, changing the hex sizes you can scale the board size from mega, to tiny! @cr-gif
+
+Thanks for taking the time to read!
+
+If you have any tips on how I could have done this better, or any other unique ideas feel free to reach me [@BCochraneR](https://x.com/BenCochraneR) on X, or [@bencochrane.bsky.social](https://bsky.app/profile/bencochrane.bsky.social)
+
+::::
+```{=html}
+<style>
+  .cr-section.overlay-left {
+    background-color: #A62C2B;
+  }
+
+  .cr-section.overlay-left .narrative-col .narrative {
+    font-size: 1.15em;
+    background-color: #11111199;
+    color: #f1f1f1;
+    padding: 0.6em 0.8em;
+    border-radius: 0;
+    backdrop-filter: blur(10px);
+  }
+</style>
+<style>
+  .cr-section.overlay-center {
+    background-color: #FFCE00;
+  }
+
+  .cr-section.overlay-center .narrative-col .narrative {
+    font-size: 1.15em;
+    background-color: #11111199;
+    color: #f1f1f1;
+    padding: 0.6em 0.8em;
+    border-radius: 0;
+    backdrop-filter: blur(10px);
+  }
+  
+</style>
+```
